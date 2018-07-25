@@ -7,7 +7,9 @@ import com.xh.annotation.BindItemLongClick;
 import com.xh.annotation.BindLayout;
 import com.xh.annotation.BindLongClick;
 import com.xh.annotation.BindPackage;
+import com.xh.annotation.BindStatusColor;
 import com.xh.annotation.BindString;
+import com.xh.annotation.BindTheme;
 import com.xh.annotation.BindView;
 
 import java.lang.annotation.Annotation;
@@ -36,7 +38,7 @@ public class AnnotationParas extends AbstractProcessor {
     Map<String, BindFiled> filedMap;
 
     {
-        annotations = Arrays.asList(BindArray.class, BindClick.class, BindItemClick.class, BindItemLongClick.class, BindLongClick.class, BindString.class, BindView.class, BindPackage.class, BindLayout.class);
+        annotations = Arrays.asList(BindArray.class, BindClick.class, BindItemClick.class, BindItemLongClick.class, BindLongClick.class, BindString.class, BindView.class, BindPackage.class, BindLayout.class, BindTheme.class, BindStatusColor.class);
         filedMap = new HashMap<>();
     }
 
@@ -73,6 +75,8 @@ public class AnnotationParas extends AbstractProcessor {
         parasString(roundEnvironment);
         parasView(roundEnvironment);
         parasLayout(roundEnvironment);
+        parasTheme(roundEnvironment);
+        parasColor(roundEnvironment);
 
         Collection<BindFiled> set1 = filedMap.values();
         for (BindFiled bindFiled : set1)
@@ -198,6 +202,31 @@ public class AnnotationParas extends AbstractProcessor {
                 BindFiled bindFiled = element2BindFiled(typeElement);
                 BindLayout bindView = element.getAnnotation(BindLayout.class);
                 bindFiled.layout = bindView.layout();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void parasTheme(RoundEnvironment roundEnvironment) {
+        println("parasTheme");
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(BindTheme.class)) {
+            try {
+                TypeElement typeElement = (TypeElement) element;
+                BindFiled bindFiled = element2BindFiled(typeElement);
+                BindTheme bindView = element.getAnnotation(BindTheme.class);
+                bindFiled.theme = bindView.theme();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    } private void parasColor(RoundEnvironment roundEnvironment) {
+        println("parasColor");
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(BindStatusColor.class)) {
+            try {
+                TypeElement typeElement = (TypeElement) element;
+                BindFiled bindFiled = element2BindFiled(typeElement);
+                BindStatusColor bindView = element.getAnnotation(BindStatusColor.class);
+                bindFiled.color = bindView.color();
             } catch (Exception e) {
                 e.printStackTrace();
             }
