@@ -26,6 +26,8 @@ public class BindFiled {
     String resourcesPackage;
     String packageName;
     String name;
+    String theme;
+    String color;
     String clickMethod;
     String itemClickMethod;
     String itemLongClickMethod;
@@ -93,14 +95,17 @@ public class BindFiled {
         }
         typeSpecBuilder.addField(ClassName.get(packageName, name), "target", Modifier.PRIVATE);
         typeSpecBuilder.addField(ClassName.get(String.class), "packageName", Modifier.PRIVATE);
+        typeSpecBuilder.addField(ClassName.get(String.class), "color", Modifier.PRIVATE);
+        typeSpecBuilder.addField(TypeName.INT, "theme", Modifier.PRIVATE);
 //        typeSpecBuilder.addField(ClassName.get("android.view", "View"), "layout", Modifier.PRIVATE);
         typeSpecBuilder.addField(TypeName.INT, "layoutId", Modifier.PRIVATE);
         typeSpecBuilder.addMethod(createUnBind());
         typeSpecBuilder.addMethod(createConstructor());
         typeSpecBuilder.addMethod(createBind());
         typeSpecBuilder.addMethod(createPackage());
-//        typeSpecBuilder.addMethod(createLayout());
+        typeSpecBuilder.addMethod(createColor());
         typeSpecBuilder.addMethod(createLayoutId());
+        typeSpecBuilder.addMethod(createTheme());
         JavaFile.Builder javaBuilder = JavaFile.builder(packageName, typeSpecBuilder.build());
         return javaBuilder.build();
     }
@@ -115,10 +120,14 @@ public class BindFiled {
         } else {
             main.addStatement("this.packageName=\"" + resourcesPackage + "\"");
         }
-        main.addStatement("this.layoutId= com.xh.annotation.Util.layout(\"" + layout + "\",this.packageName,context)");
+        if (layout != null && !layout.isEmpty())
+            main.addStatement("this.layoutId= com.xh.annotation.Util.layout(\"" + layout + "\",this.packageName,context)");
+        if (color != null && !color.isEmpty())
+            main.addStatement("this.color= \"" + color + "\"");
+        if (theme != null && !theme.isEmpty())
+            main.addStatement("this.theme= com.xh.annotation.Util.style(\"" + theme + "\",this.packageName,context)");
 //        main.addStatement("this.layout= com.xh.annotation.Util.layoutView(layoutId,context);");
 //        main.addStatement("init()");
-
 
 
         return main.build();
@@ -192,7 +201,7 @@ public class BindFiled {
         MethodSpec.Builder main = MethodSpec.methodBuilder("bind")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
-                .addParameter(ClassName.bestGuess("android.view.View"),"layout")
+                .addParameter(ClassName.bestGuess("android.view.View"), "layout")
                 .returns(void.class);
         if (resourcesPackage == null)
             resourcesPackage = "null";
@@ -286,6 +295,24 @@ public class BindFiled {
                 .addAnnotation(Override.class)
                 .returns(String.class);
         main.addStatement("return packageName");
+        return main.build();
+    }
+
+    public MethodSpec createColor() {
+        MethodSpec.Builder main = MethodSpec.methodBuilder("color")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .returns(String.class);
+        main.addStatement("return color");
+        return main.build();
+    }
+
+    public MethodSpec createTheme() {
+        MethodSpec.Builder main = MethodSpec.methodBuilder("theme")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .returns(int.class);
+        main.addStatement("return theme");
         return main.build();
     }
 
