@@ -45,6 +45,33 @@ public class Util {
         return LayoutInflater.from(context).inflate(id,null);
     }
 
+    public static  int style(String name, String packageName, Context context){
+        if (name == null || name.isEmpty() || context == null)
+            return -1;
+        if (packageName == null || packageName.isEmpty()||packageName.equals("null"))
+            packageName = context.getPackageName();
+        try {
+            Resources resources = context.getResources();
+            return name2id(resources, name, "style", packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    public static  int color(String name, String packageName, Context context){
+        if (name == null || name.isEmpty() || context == null)
+            return -1;
+        if (packageName == null || packageName.isEmpty()||packageName.equals("null"))
+            packageName = context.getPackageName();
+        try {
+            Resources resources = context.getResources();
+            return name2id(resources, name, "style", packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     public static View findView(String name, View parant) {
         return findView(name, null, parant);
     }
