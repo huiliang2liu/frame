@@ -12,4 +12,6 @@ public interface Bind {
     void bind(View vew);
     int layout();
     String packageName();
+    int theme();
+    String color();
 }
